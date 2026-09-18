@@ -148,7 +148,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
 
       {!isRegister && (
         <div className="mt-6 rounded-lg border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
-          <p className="mb-1 font-medium text-foreground">Demo accounts (password: password)</p>
+          <p className="mb-1 font-medium text-foreground">Demo accounts (password: vivek@2006)</p>
           <p>admin@campus.edu · maintenance@campus.edu · student@campus.edu · faculty@campus.edu</p>
         </div>
       )}

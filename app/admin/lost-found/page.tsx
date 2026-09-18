@@ -28,7 +28,7 @@ import {
 import { fetcher, apiSend, timeAgo } from "@/lib/client"
 import type { LostFoundItem, PublicUser } from "@/lib/types"
 
-export default function LostFoundPage() {
+export default function AdminLostFoundPage() {
   const { data: me } = useSWR<{ user: PublicUser }>("/api/auth/me", fetcher)
   const { data, isLoading, mutate } = useSWR<{ items: LostFoundItem[] }>(
     "/api/lost-found",
@@ -93,12 +93,12 @@ export default function LostFoundPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-6">
+    <div className="mx-auto flex max-w-6xl flex-col gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Campus Lost & Found</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Campus Lost & Found Management</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Report items you have lost or found across campus buildings.
+            Manage and post lost or found items across campus buildings.
           </p>
         </div>
         <Button onClick={() => setOpenModal(true)}>
@@ -121,8 +121,8 @@ export default function LostFoundPage() {
       </div>
 
       {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {Array.from({ length: 4 }).map((_, i) => (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
             <Card key={i} className="animate-pulse">
               <CardContent className="h-32 p-6" />
             </Card>
@@ -137,58 +137,53 @@ export default function LostFoundPage() {
           </p>
         </Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {filtered.map((item) => {
-            const isOwner = me?.user.id === item.reportedById || me?.user.role === "admin"
-            return (
-              <Card key={item.id} className="flex flex-col justify-between">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <Badge variant={item.type === "lost" ? "destructive" : "default"}>
-                      {item.type.toUpperCase()}
-                    </Badge>
-                    <Badge variant={item.status === "open" ? "outline" : "secondary"}>
-                      {item.status}
-                    </Badge>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((item) => (
+            <Card key={item.id} className="flex flex-col justify-between">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between gap-2">
+                  <Badge variant={item.type === "lost" ? "destructive" : "default"}>
+                    {item.type.toUpperCase()}
+                  </Badge>
+                  <Badge variant={item.status === "open" ? "outline" : "secondary"}>
+                    {item.status}
+                  </Badge>
+                </div>
+                <CardTitle className="mt-2 text-base">{item.title}</CardTitle>
+                <CardDescription className="flex items-center gap-1">
+                  <MapPin className="size-3.5" /> {item.location} · {item.category}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-1 flex-col justify-between gap-4">
+                <p className="text-sm text-muted-foreground">
+                  {item.description || "No additional description provided."}
+                </p>
+                <div className="flex flex-col gap-2 rounded-lg bg-muted/40 p-3 text-xs">
+                  <div className="flex items-center justify-between text-muted-foreground">
+                    <span className="flex items-center gap-1 font-medium text-foreground">
+                      <User className="size-3.5" /> {item.reportedByName}
+                    </span>
+                    <span>{timeAgo(item.createdAt)}</span>
                   </div>
-                  <CardTitle className="mt-2 text-base">{item.title}</CardTitle>
-                  <CardDescription className="flex items-center gap-1">
-                    <MapPin className="size-3.5" /> {item.location} · {item.category}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-1 flex-col justify-between gap-4">
-                  <p className="text-sm text-muted-foreground">
-                    {item.description || "No additional description provided."}
-                  </p>
-                  <div className="flex flex-col gap-2 rounded-lg bg-muted/40 p-3 text-xs">
-                    <div className="flex items-center justify-between text-muted-foreground">
-                      <span className="flex items-center gap-1 font-medium text-foreground">
-                        <User className="size-3.5" /> {item.reportedByName}
-                      </span>
-                      <span>{timeAgo(item.createdAt)}</span>
+                  {item.contact && (
+                    <div className="flex items-center gap-1 font-mono text-muted-foreground">
+                      <Phone className="size-3.5" /> {item.contact}
                     </div>
-                    {item.contact && (
-                      <div className="flex items-center gap-1 font-mono text-muted-foreground">
-                        <Phone className="size-3.5" /> {item.contact}
-                      </div>
-                    )}
-                  </div>
-
-                  {isOwner && (
-                    <Button
-                      size="sm"
-                      variant={item.status === "open" ? "outline" : "ghost"}
-                      onClick={() => toggleStatus(item)}
-                      className="mt-1 w-full"
-                    >
-                      <CheckCircle2 className="mr-2 size-4" />
-                      Mark as {item.status === "open" ? (item.type === "lost" ? "Claimed" : "Returned") : "Open"}
-                    </Button>
                   )}
-                </CardContent>
-              </Card>
-            )
-          })}
+                </div>
+
+                <Button
+                  size="sm"
+                  variant={item.status === "open" ? "outline" : "ghost"}
+                  onClick={() => toggleStatus(item)}
+                  className="mt-1 w-full"
+                >
+                  <CheckCircle2 className="mr-2 size-4" />
+                  Mark as {item.status === "open" ? (item.type === "lost" ? "Claimed" : "Returned") : "Open"}
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       )}
 
@@ -198,7 +193,7 @@ export default function LostFoundPage() {
           <DialogHeader>
             <DialogTitle>Post to Lost & Found</DialogTitle>
             <DialogDescription>
-              Provide item details so students and staff can identify or return it.
+              Provide item details to list on the campus lost & found log.
             </DialogDescription>
           </DialogHeader>
 
@@ -211,8 +206,8 @@ export default function LostFoundPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="lost">I lost something</SelectItem>
-                    <SelectItem value="found">I found something</SelectItem>
+                    <SelectItem value="lost">Lost item</SelectItem>
+                    <SelectItem value="found">Found item</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

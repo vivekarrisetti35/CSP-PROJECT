@@ -222,8 +222,8 @@ function seed(): DB {
     },
     {
       id: "a_2",
-      title: "New complaint QR codes installed",
-      body: "Scan the QR code on any campus resource to report an issue instantly.",
+      title: "Campus complaint system active",
+      body: "Submit and track all facility complaints directly via the online portal.",
       authorName: "Ava Admin",
       createdAt: daysAgo(6),
     },

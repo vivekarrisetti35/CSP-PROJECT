@@ -6,6 +6,7 @@ import type { LostFoundItem } from "@/lib/types"
 export async function GET(req: Request) {
   const user = await getCurrentUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (user.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const { searchParams } = new URL(req.url)
   const type = searchParams.get("type")
@@ -18,6 +19,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const user = await getCurrentUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (user.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const body = await req.json().catch(() => null)
   if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 })

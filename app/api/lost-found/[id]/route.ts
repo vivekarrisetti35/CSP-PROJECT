@@ -13,8 +13,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const item = db.lostFound.find((i) => i.id === id)
   if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  if (item.reportedById !== user.id && user.role !== "admin") {
-    return NextResponse.json({ error: "Not allowed." }, { status: 403 })
+  if (user.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
   const body = await req.json().catch(() => null)

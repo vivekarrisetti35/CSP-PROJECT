@@ -11,6 +11,7 @@ import {
   Clock,
   ListChecks,
   Megaphone,
+  PackageSearch,
   Users,
   Wrench,
 } from "lucide-react"
@@ -117,6 +118,9 @@ export default function AdminDashboard() {
               </Button>
               <Button variant="outline" className="justify-start gap-2" nativeButton={false} render={<Link href="/admin/resources" />}>
                 <Boxes className="size-4 text-primary" /> Manage Resources & QR Codes
+              </Button>
+              <Button variant="outline" className="justify-start gap-2" nativeButton={false} render={<Link href="/admin/lost-found" />}>
+                <PackageSearch className="size-4 text-primary" /> Manage Lost & Found
               </Button>
               <Button variant="outline" className="justify-start gap-2" nativeButton={false} render={<Link href="/admin/announcements" />}>
                 <Megaphone className="size-4 text-primary" /> Broadcast Announcements

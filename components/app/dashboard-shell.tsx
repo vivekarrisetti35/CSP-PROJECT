@@ -13,7 +13,6 @@ import {
   Megaphone,
   Menu,
   PackageSearch,
-  QrCode,
   Users,
   Wrench,
   BarChart3,
@@ -41,19 +40,14 @@ const NAV: Record<string, NavItem[]> = {
     { href: "/portal", label: "Overview", icon: LayoutDashboard },
     { href: "/portal/complaints", label: "My Complaints", icon: ListChecks },
     { href: "/portal/new", label: "New Complaint", icon: PlusCircle },
-    { href: "/portal/lost-found", label: "Lost & Found", icon: PackageSearch },
-    { href: "/portal/scan", label: "Scan QR", icon: QrCode },
   ],
   faculty: [
     { href: "/portal", label: "Overview", icon: LayoutDashboard },
     { href: "/portal/complaints", label: "My Complaints", icon: ListChecks },
     { href: "/portal/new", label: "New Complaint", icon: PlusCircle },
-    { href: "/portal/lost-found", label: "Lost & Found", icon: PackageSearch },
-    { href: "/portal/scan", label: "Scan QR", icon: QrCode },
   ],
   maintenance: [
     { href: "/maintenance", label: "Assigned Work", icon: Wrench },
-    { href: "/portal/lost-found", label: "Lost & Found", icon: PackageSearch },
   ],
   admin: [
     { href: "/admin", label: "Overview", icon: LayoutDashboard },
@@ -61,6 +55,7 @@ const NAV: Record<string, NavItem[]> = {
     { href: "/admin/complaints", label: "Complaints", icon: ListChecks },
     { href: "/admin/users", label: "Users", icon: Users },
     { href: "/admin/resources", label: "Resources", icon: Boxes },
+    { href: "/admin/lost-found", label: "Lost & Found", icon: PackageSearch },
     { href: "/admin/announcements", label: "Announcements", icon: Megaphone },
   ],
 }

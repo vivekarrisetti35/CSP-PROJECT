@@ -4,7 +4,6 @@ import {
   BarChart3,
   Bell,
   PackageSearch,
-  QrCode,
   ShieldCheck,
   Wrench,
 } from "lucide-react"
@@ -19,19 +18,14 @@ const FEATURES = [
     body: "Report a broken AC, leaking tap, or dead WiFi in seconds and watch it move from pending to resolved.",
   },
   {
-    icon: QrCode,
-    title: "QR quick-report",
-    body: "Scan the QR code on any campus resource to open a pre-filled complaint for that exact asset and location.",
-  },
-  {
     icon: ShieldCheck,
     title: "Role-based workflow",
     body: "Students and faculty submit, maintenance staff resolve, and admins assign, prioritize, and oversee.",
   },
   {
     icon: PackageSearch,
-    title: "Lost & Found",
-    body: "Post lost items and browse found ones across campus, with contact details and claim status.",
+    title: "Admin Lost & Found",
+    body: "Admin-managed campus lost & found registry with contact details and claim tracking.",
   },
   {
     icon: Bell,

@@ -24,6 +24,7 @@ export async function POST(req: Request) {
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
+    secure: process.env.NODE_ENV === "production",
   })
 
   return NextResponse.json({ user: toPublic(user) })

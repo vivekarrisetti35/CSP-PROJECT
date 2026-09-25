@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server"
-import { cookies } from "next/headers"
 import { SESSION_COOKIE } from "@/lib/auth"
 
 export async function POST() {
-  const store = await cookies()
-  store.delete(SESSION_COOKIE)
-  return NextResponse.json({ ok: true })
+  const res = NextResponse.json({ ok: true })
+  res.cookies.set(SESSION_COOKIE, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+    secure: process.env.NODE_ENV === "production",
+  })
+  return res
 }

@@ -18,8 +18,8 @@ export async function POST(req: Request) {
   }
 
   const sessionId = createSession(user.id)
-  const store = await cookies()
-  store.set(SESSION_COOKIE, sessionId, {
+  const res = NextResponse.json({ user: toPublic(user) })
+  res.cookies.set(SESSION_COOKIE, sessionId, {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
@@ -27,5 +27,5 @@ export async function POST(req: Request) {
     secure: process.env.NODE_ENV === "production",
   })
 
-  return NextResponse.json({ user: toPublic(user) })
+  return res
 }

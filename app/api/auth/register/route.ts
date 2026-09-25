@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
-import { db, uid } from "@/lib/store"
-import { SESSION_COOKIE, createSession, toPublic } from "@/lib/auth"
+import { db, uid, saveDb } from "@/lib/store"
+import { SESSION_COOKIE, createSession, toPublic, hashPassword } from "@/lib/auth"
 import type { Role, User } from "@/lib/types"
 
 const ROLES: Role[] = ["student", "faculty", "maintenance", "admin"]
@@ -24,17 +24,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 })
   }
 
+  const hashedPassword = hashPassword(String(password))
   const user: User = {
     id: uid("u"),
     name: String(name),
     email: String(email).toLowerCase(),
-    password: String(password),
+    password: hashedPassword,
     role,
     department: department ? String(department) : null,
     hostel: hostel ? String(hostel) : null,
     createdAt: new Date().toISOString(),
   }
   db.users.push(user)
+  saveDb()
 
   const sessionId = createSession(user.id)
   const store = await cookies()

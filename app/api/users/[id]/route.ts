@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { db } from "@/lib/store"
+import { db, saveDb } from "@/lib/store"
 import { getCurrentUser } from "@/lib/auth"
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -13,5 +13,6 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   const idx = db.users.findIndex((u) => u.id === id)
   if (idx === -1) return NextResponse.json({ error: "Not found" }, { status: 404 })
   db.users.splice(idx, 1)
+  saveDb()
   return NextResponse.json({ ok: true })
 }

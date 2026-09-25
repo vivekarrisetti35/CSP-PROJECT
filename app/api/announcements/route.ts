@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { db, uid } from "@/lib/store"
+import { db, uid, saveDb } from "@/lib/store"
 import { getCurrentUser } from "@/lib/auth"
 import type { Announcement } from "@/lib/types"
 
@@ -44,6 +44,7 @@ export async function POST(req: Request) {
         createdAt: now,
       })
     })
+  saveDb()
 
   return NextResponse.json({ announcement }, { status: 201 })
 }

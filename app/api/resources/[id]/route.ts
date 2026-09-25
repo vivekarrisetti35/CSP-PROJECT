@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { db } from "@/lib/store"
+import { db, saveDb } from "@/lib/store"
 
 // Public lookup so a scanned QR can show what is being reported before login.
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -20,6 +20,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   if (idx === -1) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   db.resources.splice(idx, 1)
+  saveDb()
   return NextResponse.json({ ok: true })
 }
 

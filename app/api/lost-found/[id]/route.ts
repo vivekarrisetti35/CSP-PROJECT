@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { db } from "@/lib/store"
+import { db, saveDb } from "@/lib/store"
 import { getCurrentUser } from "@/lib/auth"
 import type { LostFoundItem } from "@/lib/types"
 
@@ -23,5 +23,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     return NextResponse.json({ error: "Invalid status." }, { status: 400 })
   }
   item.status = status
+  saveDb()
   return NextResponse.json({ item })
 }

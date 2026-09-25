@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
 import { db } from "@/lib/store"
-import { SESSION_COOKIE, createSession, toPublic } from "@/lib/auth"
+import { SESSION_COOKIE, createSession, toPublic, verifyPassword } from "@/lib/auth"
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null)
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   }
 
   const user = db.users.find((u) => u.email.toLowerCase() === String(email).toLowerCase())
-  if (!user || user.password !== String(password)) {
+  if (!user || !verifyPassword(String(password), user.password)) {
     return NextResponse.json({ error: "Invalid email or password." }, { status: 401 })
   }
 

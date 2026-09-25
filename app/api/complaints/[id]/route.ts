@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { db, uid } from "@/lib/store"
+import { db, uid, saveDb } from "@/lib/store"
 import { getCurrentUser } from "@/lib/auth"
 import type { ComplaintStatus, Priority } from "@/lib/types"
 
@@ -106,5 +106,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   }
 
   complaint.updatedAt = new Date().toISOString()
+  saveDb()
   return NextResponse.json({ complaint })
 }

@@ -260,12 +260,84 @@ function seed(): DB {
   }
 }
 
+import fs from "fs"
+import path from "path"
+
+const DB_PATH = path.join(process.cwd(), ".data", "db.json")
+
+function ensureDataDir() {
+  const dir = path.dirname(DB_PATH)
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true })
+  }
+}
+
+export function saveDb() {
+  try {
+    ensureDataDir()
+    const data = {
+      users: db.users,
+      resources: db.resources,
+      complaints: db.complaints,
+      lostFound: db.lostFound,
+      notifications: db.notifications,
+      announcements: db.announcements,
+      sessions: Array.from(db.sessions.entries()),
+      seq: db.seq,
+    }
+    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8")
+  } catch (err) {
+    console.error("Failed to save DB:", err)
+  }
+}
+
+function loadDb(): DB {
+  try {
+    if (fs.existsSync(DB_PATH)) {
+      const raw = fs.readFileSync(DB_PATH, "utf-8")
+      const parsed = JSON.parse(raw)
+      return {
+        users: parsed.users || [],
+        resources: parsed.resources || [],
+        complaints: parsed.complaints || [],
+        lostFound: parsed.lostFound || [],
+        notifications: parsed.notifications || [],
+        announcements: parsed.announcements || [],
+        sessions: new Map(parsed.sessions || []),
+        seq: parsed.seq || 1005,
+      }
+    }
+  } catch (err) {
+    console.error("Failed to load DB, seeding new:", err)
+  }
+  const initial = seed()
+  try {
+    ensureDataDir()
+    const data = {
+      users: initial.users,
+      resources: initial.resources,
+      complaints: initial.complaints,
+      lostFound: initial.lostFound,
+      notifications: initial.notifications,
+      announcements: initial.announcements,
+      sessions: Array.from(initial.sessions.entries()),
+      seq: initial.seq,
+    }
+    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8")
+  } catch (err) {
+    console.error("Failed to write initial DB:", err)
+  }
+  return initial
+}
+
 const g = globalThis as unknown as { __crmcrs_db?: DB }
-export const db: DB = g.__crmcrs_db ?? (g.__crmcrs_db = seed())
+export const db: DB = g.__crmcrs_db ?? (g.__crmcrs_db = loadDb())
 
 export function nextCode() {
   db.seq += 1
+  saveDb()
   return `CMP-${db.seq}`
 }
 
 export { uid }
+

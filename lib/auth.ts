@@ -24,6 +24,25 @@ function verify(signed: string): string | null {
   return value
 }
 
+export function hashPassword(password: string): string {
+  const salt = crypto.randomBytes(16).toString("hex")
+  const hash = crypto.scryptSync(password, salt, 64).toString("hex")
+  return `${salt}:${hash}`
+}
+
+export function verifyPassword(password: string, hashOrPlain: string): boolean {
+  if (!hashOrPlain || typeof hashOrPlain !== "string") return false
+  if (!hashOrPlain.includes(":")) {
+    return password === hashOrPlain
+  }
+  const [salt, key] = hashOrPlain.split(":")
+  if (!salt || !key) return false
+  const hashBuffer = crypto.scryptSync(password, salt, 64)
+  const keyBuffer = Buffer.from(key, "hex")
+  if (hashBuffer.length !== keyBuffer.length) return false
+  return crypto.timingSafeEqual(hashBuffer, keyBuffer)
+}
+
 export function toPublic(user: User): PublicUser {
   const { password, ...rest } = user
   return rest

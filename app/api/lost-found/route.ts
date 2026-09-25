@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { db, uid } from "@/lib/store"
+import { db, uid, saveDb } from "@/lib/store"
 import { getCurrentUser } from "@/lib/auth"
 import type { LostFoundItem } from "@/lib/types"
 
@@ -46,5 +46,6 @@ export async function POST(req: Request) {
     createdAt: new Date().toISOString(),
   }
   db.lostFound.push(item)
+  saveDb()
   return NextResponse.json({ item }, { status: 201 })
 }

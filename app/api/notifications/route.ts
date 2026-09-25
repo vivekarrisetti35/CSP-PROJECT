@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { db } from "@/lib/store"
+import { db, saveDb } from "@/lib/store"
 import { getCurrentUser } from "@/lib/auth"
 
 export async function GET() {
@@ -19,5 +19,6 @@ export async function PATCH(req: Request) {
   db.notifications
     .filter((n) => n.userId === user.id && (id ? n.id === id : true))
     .forEach((n) => (n.read = true))
+  saveDb()
   return NextResponse.json({ ok: true })
 }

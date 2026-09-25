@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server"
 import { db, uid, saveDb } from "@/lib/store"
-import { SESSION_COOKIE, createSession, toPublic, hashPassword, getCurrentUser } from "@/lib/auth"
+import { toPublic, hashPassword } from "@/lib/auth"
 import type { Role, User } from "@/lib/types"
 
 const ROLES: Role[] = ["student", "faculty", "maintenance", "admin"]
 
 export async function POST(req: Request) {
-  const activeUser = await getCurrentUser()
-
   const body = await req.json().catch(() => null)
   if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 })
 
@@ -39,19 +37,5 @@ export async function POST(req: Request) {
   db.users.push(user)
   saveDb()
 
-  const res = NextResponse.json({ user: toPublic(user) }, { status: 201 })
-
-  // Only log in automatically if guest registered themselves (no existing active session)
-  if (!activeUser) {
-    const sessionId = createSession(user.id)
-    res.cookies.set(SESSION_COOKIE, sessionId, {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7,
-      secure: process.env.NODE_ENV === "production",
-    })
-  }
-
-  return res
+  return NextResponse.json({ user: toPublic(user) }, { status: 201 })
 }

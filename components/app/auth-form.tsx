@@ -41,8 +41,13 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     try {
       const url = isRegister ? "/api/auth/register" : "/api/auth/login"
       const { user } = await apiSend<{ user: { role: Role } }>(url, "POST", payload)
-      toast.success(isRegister ? "Account created" : "Welcome back")
-      window.location.href = roleHome(user.role)
+      if (isRegister) {
+        toast.success("Account created successfully! Please sign in.")
+        router.push("/login")
+      } else {
+        toast.success("Welcome back")
+        window.location.href = roleHome(user.role)
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
       setLoading(false)

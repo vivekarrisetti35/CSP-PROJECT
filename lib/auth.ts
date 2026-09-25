@@ -14,13 +14,15 @@ function sign(value: string): string {
 }
 
 function verify(signed: string): string | null {
+  if (!signed || typeof signed !== "string") return null
   const idx = signed.lastIndexOf(".")
   if (idx === -1) return null
   const value = signed.slice(0, idx)
   const expected = sign(value)
-  // Constant-time comparison
-  if (signed.length !== expected.length) return null
-  if (!crypto.timingSafeEqual(Buffer.from(signed), Buffer.from(expected))) return null
+  const signedBuf = Buffer.from(signed)
+  const expectedBuf = Buffer.from(expected)
+  if (signedBuf.length !== expectedBuf.length) return null
+  if (!crypto.timingSafeEqual(signedBuf, expectedBuf)) return null
   return value
 }
 
@@ -49,21 +51,50 @@ export function toPublic(user: User): PublicUser {
 }
 
 /**
- * Creates a signed session token that encodes the userId directly.
+ * Creates a signed session token that encodes the user profile directly.
  * No server-side session store needed — works across serverless instances.
  */
-export function createSession(userId: string): string {
-  return sign(userId)
+export function createSession(userOrId: User | PublicUser | string): string {
+  if (typeof userOrId === "string") {
+    const existing = db.users.find((u) => u.id === userOrId)
+    if (existing) {
+      return sign(JSON.stringify(toPublic(existing)))
+    }
+    return sign(JSON.stringify({ id: userOrId, name: "User", email: "", role: "student", department: null, hostel: null, createdAt: new Date().toISOString() }))
+  }
+  const pub = "password" in userOrId ? toPublic(userOrId) : userOrId
+  return sign(JSON.stringify(pub))
 }
 
 export async function getCurrentUser(): Promise<PublicUser | null> {
-  const store = await cookies()
-  const token = store.get(SESSION_COOKIE)?.value
-  if (!token) return null
-  const userId = verify(token)
-  if (!userId) return null
-  const user = db.users.find((u) => u.id === userId)
-  return user ? toPublic(user) : null
+  try {
+    const store = await cookies()
+    const token = store.get(SESSION_COOKIE)?.value
+    if (!token) return null
+    const raw = verify(token)
+    if (!raw) return null
+
+    if (raw.startsWith("{")) {
+      const parsedUser = JSON.parse(raw) as PublicUser
+      if (parsedUser && parsedUser.id && parsedUser.role) {
+        const existing = db.users.find((u) => u.id === parsedUser.id)
+        if (existing) {
+          return toPublic(existing)
+        }
+        db.users.push({
+          ...parsedUser,
+          password: "",
+        })
+        return parsedUser
+      }
+    }
+
+    // Legacy userId token fallback
+    const user = db.users.find((u) => u.id === raw)
+    return user ? toPublic(user) : null
+  } catch {
+    return null
+  }
 }
 
 export async function requireUser(): Promise<PublicUser> {

@@ -268,19 +268,37 @@ function seed(): DB {
 
 import fs from "fs"
 import path from "path"
+import os from "os"
 
-const DB_PATH = path.join(process.cwd(), ".data", "db.json")
+function getDbPath(): string {
+  const localPath = path.join(process.cwd(), ".data", "db.json")
+  try {
+    const dir = path.dirname(localPath)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
+    fs.accessSync(dir, fs.constants.W_OK)
+    return localPath
+  } catch {
+    return path.join(os.tmpdir(), "crmcrs_db.json")
+  }
+}
 
-function ensureDataDir() {
-  const dir = path.dirname(DB_PATH)
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
+function ensureDataDir(filePath: string) {
+  try {
+    const dir = path.dirname(filePath)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
+  } catch (err) {
+    console.error("Data directory creation failed:", err)
   }
 }
 
 export function saveDb() {
   try {
-    ensureDataDir()
+    const dbPath = getDbPath()
+    ensureDataDir(dbPath)
     const data = {
       users: db.users,
       resources: db.resources,
@@ -291,16 +309,17 @@ export function saveDb() {
       sessions: Array.from(db.sessions.entries()),
       seq: db.seq,
     }
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8")
+    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2), "utf-8")
   } catch (err) {
     console.error("Failed to save DB:", err)
   }
 }
 
 function loadDb(): DB {
+  const dbPath = getDbPath()
   try {
-    if (fs.existsSync(DB_PATH)) {
-      const raw = fs.readFileSync(DB_PATH, "utf-8")
+    if (fs.existsSync(dbPath)) {
+      const raw = fs.readFileSync(dbPath, "utf-8")
       const parsed = JSON.parse(raw)
       return {
         users: parsed.users || [],
@@ -318,7 +337,7 @@ function loadDb(): DB {
   }
   const initial = seed()
   try {
-    ensureDataDir()
+    ensureDataDir(dbPath)
     const data = {
       users: initial.users,
       resources: initial.resources,
@@ -329,7 +348,7 @@ function loadDb(): DB {
       sessions: Array.from(initial.sessions.entries()),
       seq: initial.seq,
     }
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8")
+    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2), "utf-8")
   } catch (err) {
     console.error("Failed to write initial DB:", err)
   }

@@ -3,6 +3,8 @@ import { cookies } from "next/headers"
 import { db } from "@/lib/store"
 import { SESSION_COOKIE, createSession, toPublic, verifyPassword } from "@/lib/auth"
 
+export const dynamic = "force-dynamic"
+
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null)
   if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 })
@@ -24,7 +26,7 @@ export async function POST(req: Request) {
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production" && process.env.COOKIE_SECURE !== "false",
   })
 
   return res

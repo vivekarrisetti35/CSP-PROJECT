@@ -3,6 +3,8 @@ import { db, uid, saveDb } from "@/lib/store"
 import { getCurrentUser } from "@/lib/auth"
 import type { ClaimRequest } from "@/lib/types"
 
+export const dynamic = "force-dynamic"
+
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

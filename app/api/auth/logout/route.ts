@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { SESSION_COOKIE } from "@/lib/auth"
 
+export const dynamic = "force-dynamic"
+
 export async function POST() {
   const res = NextResponse.json({ ok: true })
   res.cookies.set(SESSION_COOKIE, "", {
@@ -8,7 +10,7 @@ export async function POST() {
     sameSite: "lax",
     path: "/",
     maxAge: 0,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production" && process.env.COOKIE_SECURE !== "false",
   })
   return res
 }

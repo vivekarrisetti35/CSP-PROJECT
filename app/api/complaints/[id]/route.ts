@@ -3,6 +3,8 @@ import { db, uid, saveDb } from "@/lib/store"
 import { getCurrentUser } from "@/lib/auth"
 import type { ComplaintStatus, Priority } from "@/lib/types"
 
+export const dynamic = "force-dynamic"
+
 const STATUSES: ComplaintStatus[] = ["pending", "assigned", "in_progress", "resolved", "rejected"]
 const PRIORITIES: Priority[] = ["low", "medium", "high", "urgent"]
 

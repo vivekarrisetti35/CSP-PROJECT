@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/lib/auth'
 import { DashboardShell } from '@/components/app/dashboard-shell'
 
+export const dynamic = "force-dynamic"
+
 export default async function PortalLayout({
   children,
 }: {

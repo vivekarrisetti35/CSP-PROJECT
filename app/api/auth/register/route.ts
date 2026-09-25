@@ -3,6 +3,8 @@ import { db, uid, saveDb } from "@/lib/store"
 import { toPublic, hashPassword } from "@/lib/auth"
 import type { Role, User } from "@/lib/types"
 
+export const dynamic = "force-dynamic"
+
 const ROLES: Role[] = ["student", "faculty", "maintenance", "admin"]
 
 export async function POST(req: Request) {

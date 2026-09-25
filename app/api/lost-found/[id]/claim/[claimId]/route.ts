@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { db, uid, saveDb } from "@/lib/store"
 import { getCurrentUser } from "@/lib/auth"
 
+export const dynamic = "force-dynamic"
+
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string; claimId: string }> },

@@ -14,6 +14,8 @@ const CATEGORIES: ComplaintCategory[] = [
 ]
 const PRIORITIES: Priority[] = ["low", "medium", "high", "urgent"]
 
+export const dynamic = "force-dynamic"
+
 export async function GET(req: Request) {
   const user = await getCurrentUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

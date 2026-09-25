@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { db, saveDb } from "@/lib/store"
 
 // Public lookup so a scanned QR can show what is being reported before login.
+export const dynamic = "force-dynamic"
+
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const resource = db.resources.find((r) => r.id === id)

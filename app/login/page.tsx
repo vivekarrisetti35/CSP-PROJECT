@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/lib/auth"
 import { roleHome } from "@/lib/client"
 import { AuthForm } from "@/components/app/auth-form"
 
+export const dynamic = "force-dynamic"
+
 export default async function LoginPage() {
   const user = await getCurrentUser()
   if (user) redirect(roleHome(user.role))

@@ -5,6 +5,8 @@ import type { LostFoundItem } from "@/lib/types"
 
 const STATUSES: LostFoundItem["status"][] = ["open", "claimed", "returned"]
 
+export const dynamic = "force-dynamic"
+
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

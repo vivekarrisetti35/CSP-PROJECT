@@ -5,7 +5,7 @@ import { fetcher } from "@/lib/client"
 import { LostFoundView } from "@/components/app/lost-found-view"
 import type { PublicUser } from "@/lib/types"
 
-export default function AdminLostFoundPage() {
+export default function MaintenanceLostFoundPage() {
   const { data: me, isLoading } = useSWR<{ user: PublicUser }>("/api/auth/me", fetcher)
 
   if (isLoading || !me?.user) {

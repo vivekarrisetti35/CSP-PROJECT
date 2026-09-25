@@ -40,14 +40,17 @@ const NAV: Record<string, NavItem[]> = {
     { href: "/portal", label: "Overview", icon: LayoutDashboard },
     { href: "/portal/complaints", label: "My Complaints", icon: ListChecks },
     { href: "/portal/new", label: "New Complaint", icon: PlusCircle },
+    { href: "/portal/lost-found", label: "Lost & Found", icon: PackageSearch },
   ],
   faculty: [
     { href: "/portal", label: "Overview", icon: LayoutDashboard },
     { href: "/portal/complaints", label: "My Complaints", icon: ListChecks },
     { href: "/portal/new", label: "New Complaint", icon: PlusCircle },
+    { href: "/portal/lost-found", label: "Lost & Found", icon: PackageSearch },
   ],
   maintenance: [
     { href: "/maintenance", label: "Assigned Work", icon: Wrench },
+    { href: "/maintenance/lost-found", label: "Lost & Found", icon: PackageSearch },
   ],
   admin: [
     { href: "/admin", label: "Overview", icon: LayoutDashboard },

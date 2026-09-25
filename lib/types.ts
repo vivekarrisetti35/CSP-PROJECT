@@ -58,6 +58,17 @@ export interface Complaint {
   updatedAt: string
 }
 
+export interface ClaimRequest {
+  id: string
+  itemId: string
+  claimedById: string
+  claimedByName: string
+  claimedByContact: string
+  proofDetails: string
+  status: "pending" | "approved" | "rejected"
+  createdAt: string
+}
+
 export interface LostFoundItem {
   id: string
   type: "lost" | "found"
@@ -65,10 +76,13 @@ export interface LostFoundItem {
   description: string
   location: string
   category: string
+  date: string
+  imageUrl?: string | null
   status: "open" | "claimed" | "returned"
   reportedById: string
   reportedByName: string
   contact: string
+  claims?: ClaimRequest[]
   createdAt: string
 }
 
